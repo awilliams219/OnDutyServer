@@ -1,0 +1,27 @@
+Apparatus_List:
+  path: /
+  methods: [GET, HEAD]
+  defaults: { _controller: AppBundle:Apparatus:list }
+
+Apparatus_Read:
+  path: /{id}
+  methods: [GET, HEAD]
+  defaults: { _controller: AppBundle:Apparatus:show }
+
+Apparatus_Create:
+  path: /
+  methods: [POST]
+  defaults: { _controller: AppBundle:Apparatus:create }
+
+Apparatus_Update:
+  path: /{id}
+  methods: [PUT]
+  defaults: { _controller: AppBundle:Apparatus:update }
+
+Apparatus_Delete:
+  path: /{id}
+  methods: [DELETE]
+  defaults: { _controller: AppBundle:Apparatus:delete }
+
+
+

@@ -1,0 +1,3 @@
+Apparatus_Routes:
+  resource: "Routing/Apparatus.yml"
+  prefix: "apparatus/"

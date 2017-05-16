@@ -1,6 +1,7 @@
 <?php
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Security\SecuredEntity;
 use AppBundle\Interfaces\Apparatus\ApparatusInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="apparatus")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ApparatusRepository")
  */
-class Apparatus implements ApparatusInterface
+class Apparatus extends SecuredEntity implements ApparatusInterface
 {
     /**
      * @var int
@@ -31,7 +32,7 @@ class Apparatus implements ApparatusInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="vin", type="string", length=50, unique=true)
+     * @ORM\Column(name="vin", type="string", length=64, unique=true)
      */
     private $vin;
 
@@ -41,6 +42,48 @@ class Apparatus implements ApparatusInterface
      * @ORM\Column(name="seats", type="integer")
      */
     private $seats;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=50, unique=false)
+     */
+    private $type;
+
+    /** @var ApparatusStatus
+     *
+     * @OneToOne(targetEntity="ApparatusStatus", mappedBy="apparatus")
+     */
+    private $status;
+
+    /**
+     * @return mixed
+     */
+    public function getStatus(): ApparatusStatus {
+        return $this->status;
+    }
+
+    /**
+     * @param mixed $status
+     */
+    public function setStatus(ApparatusStatus $status) {
+        $this->status = $status;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getType() {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
+     */
+    public function setType($type) {
+        $this->type = $type;
+    }
 
     /**
      * @return integer
