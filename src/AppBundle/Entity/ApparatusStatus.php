@@ -14,10 +14,22 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ApparatusStatus extends SecuredEntity implements ApparatusStatusInterface {
 
-    public const STATUS_OOS = -1;
-    public const STATUS_OFFDUTY = 0;
-    public const STATUS_ONDUTY = 1;
+    const STATUS_OOS = -1;
+    const STATUS_OFFDUTY = 0;
+    const STATUS_ONDUTY = 1;
 
+    public function __construct() {
+        $this->setSecurityGroup('ApparatusStatusManager');
+    }
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
 
     /**
      * @var int
@@ -41,6 +53,13 @@ class ApparatusStatus extends SecuredEntity implements ApparatusStatusInterface 
     private $offDutyTime;
 
     /**
+     * @var DateTime
+     *
+     * @ORM\Column(name="onDutyTime", type="datetime")
+     */
+    private $onDutyTime;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="post", type="string", length=64, unique=false)
@@ -57,15 +76,15 @@ class ApparatusStatus extends SecuredEntity implements ApparatusStatusInterface 
     /**
      * @var string
      *
-     * @ORM\Column(name="oosReason", type="string", length=64, unique=false)
+     * @ORM\Column(name="oosReason", type="string", length=64, unique=false, nullable=true)
      */
     private $oosReason;
 
     /**
      * @var Apparatus
      *
-     * @OneToOne(targetEntity="Apparatus", inversedBy="apparatusStatus")
-     * @JoinColumn(name="apparatus_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Apparatus", inversedBy="apparatusStatus")
+     * @ORM\JoinColumn(name="apparatus_id", referencedColumnName="id", unique=false)
      */
     private $apparatus;
 
@@ -77,15 +96,16 @@ class ApparatusStatus extends SecuredEntity implements ApparatusStatusInterface 
 
     public function setApparatus($apparatus) : ApparatusStatus {
         $this->apparatus = $apparatus;
+        return $this;
     }
 
 
 
-    public function getPersonnelCount(): integer {
+    public function getPersonnelCount(): int {
         return $this->personnelCount;
     }
 
-    public function setPersonnelCount(integer $count): ApparatusStatus {
+    public function setPersonnelCount(int $count): ApparatusStatus {
         $this->personnelCount = $count;
         return $this;
     }
@@ -125,23 +145,70 @@ class ApparatusStatus extends SecuredEntity implements ApparatusStatusInterface 
 
 
 
-    public function getDutyStatus(): integer {
+    public function getDutyStatus(): int {
         return $this->dutyStatus;
     }
 
-    public function setDutyStatus(integer $dutyStatus): ApparatusStatus {
+    public function setDutyStatus(int $dutyStatus): ApparatusStatus {
         $this->dutyStatus = $dutyStatus;
         return $this;
     }
 
 
 
-    public function getOosReason(): string {
+    public function getOosReason() : ?string {
         return $this->oosReason;
     }
 
     public function setOosReason(string $reason): ApparatusStatus {
         $this->oosReason = $reason;
         return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getOnDutyTime(): DateTime {
+        return $this->onDutyTime;
+    }
+
+    /**
+     * @param DateTime $onDutyTime
+     * @return ApparatusStatus
+     */
+    public function setOnDutyTime(DateTime $onDutyTime): ApparatusStatus {
+        $this->onDutyTime = $onDutyTime;
+        return $this;
+    }
+
+    public function condensed() {
+        return ($this->getDutyStatus() != self::STATUS_ONDUTY)
+            ? $this->getReadableDutyStatus()
+            : $this->getReadableDutyStatus() . " C" . $this->getPersonnelCount() . '0 ' . $this->getMedicalLevel() . ' until ' . $this->getOffDutyTime()->format('Hi');
+    }
+
+    public function toArray() {
+        return [
+            "personnelCount" => $this->getPersonnelCount(),
+            "medicalLevel" => $this->getMedicalLevel(),
+            "onDutyTime" => $this->getOnDutyTime()->format('c'),
+            "offDutyTime" => $this->getOffDutyTime()->format('c'),
+            "oosReason" => $this->getOosReason(),
+            "dutyStatus" => $this->getReadableDutyStatus(),
+            "post" => $this->getPost()
+        ];
+    }
+
+    protected function getReadableDutyStatus() {
+        switch ($this->getDutyStatus()) {
+            case self::STATUS_OFFDUTY:
+                return "Off Duty";
+            case self::STATUS_ONDUTY:
+                return "On Duty";
+            case self::STATUS_OOS:
+                return "Out of Service";
+            default:
+                return "Unknown";
+        }
     }
 }

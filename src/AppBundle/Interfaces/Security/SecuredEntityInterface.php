@@ -13,7 +13,7 @@ use AppBundle\Entity\Security\SecuredEntity;
 
 interface SecuredEntityInterface {
 
-    public function getGroupName(): string;
-    public function setGroupName(string $groupName): SecuredEntity;
+    public function getSecurityGroup(): string;
+    public function setSecurityGroup(string $groupName): SecuredEntity;
 
 }

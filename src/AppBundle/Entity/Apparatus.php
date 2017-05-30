@@ -3,6 +3,8 @@ namespace AppBundle\Entity;
 
 use AppBundle\Entity\Security\SecuredEntity;
 use AppBundle\Interfaces\Apparatus\ApparatusInterface;
+use AppBundle\Interfaces\SoftDeletable;
+use AppBundle\Traits\SoftDelete as SoftDeleteTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -11,8 +13,10 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="apparatus")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ApparatusRepository")
  */
-class Apparatus extends SecuredEntity implements ApparatusInterface
+class Apparatus extends SecuredEntity implements ApparatusInterface, SoftDeletable
 {
+    use SoftDeleteTrait;
+
     /**
      * @var int
      *
@@ -52,15 +56,20 @@ class Apparatus extends SecuredEntity implements ApparatusInterface
 
     /** @var ApparatusStatus
      *
-     * @OneToOne(targetEntity="ApparatusStatus", mappedBy="apparatus")
+     * @ORM\OneToMany(targetEntity="ApparatusStatus", mappedBy="apparatus", cascade={"persist"})
      */
     private $status;
+
+
+    public function __construct() {
+        $this->setSecurityGroup('ApparatusManager');
+    }
 
     /**
      * @return mixed
      */
     public function getStatus(): ApparatusStatus {
-        return $this->status;
+        return $this->status->last();
     }
 
     /**
@@ -68,6 +77,11 @@ class Apparatus extends SecuredEntity implements ApparatusInterface
      */
     public function setStatus(ApparatusStatus $status) {
         $this->status = $status;
+    }
+
+    public function addStatus(ApparatusStatus $status): Apparatus {
+        $this->status[] = $status;
+        return $this;
     }
 
 
@@ -88,7 +102,7 @@ class Apparatus extends SecuredEntity implements ApparatusInterface
     /**
      * @return integer
      */
-    public function getSeats(): integer {
+    public function getSeats(): int {
         return $this->seats;
     }
 
@@ -96,7 +110,7 @@ class Apparatus extends SecuredEntity implements ApparatusInterface
      * @param integer $seats
      * @return Apparatus
      */
-    public function setSeats(integer $seats) {
+    public function setSeats(int $seats) {
         $this->seats = $seats;
         return $this;
     }
@@ -150,5 +164,20 @@ class Apparatus extends SecuredEntity implements ApparatusInterface
         return $this->name;
     }
 
+    public function toArray(): array {
+        return [
+            "name" => $this->getName(),
+            "vin" => $this->getVin(),
+            "seats" => $this->getSeats(),
+            "type" => $this->getType(),
+            "status" => $this->getStatus()->condensed()
+        ];
+    }
+
+    public function toFullArray(): array {
+        $apparatus = $this->toArray();
+        $apparatus["status"] = $this->getStatus()->toArray();
+        return $apparatus;
+    }
 }
 

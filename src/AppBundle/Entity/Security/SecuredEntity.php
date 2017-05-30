@@ -2,20 +2,17 @@
 namespace AppBundle\Entity\Security;
 
 use AppBundle\Interfaces\Security\SecuredEntityInterface;
+use Doctrine\ORM\Mapping as ORM;
+
 
 class SecuredEntity implements SecuredEntityInterface {
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="securityGroup", type="string", length=64, unique=true)
-     */
     protected $groupName;
 
     /**
      * @return mixed
      */
-    public function getGroupName(): string {
+    public function getSecurityGroup(): string {
         return $this->groupName;
     }
 
@@ -23,7 +20,7 @@ class SecuredEntity implements SecuredEntityInterface {
      * @param mixed $groupName
      * @return SecuredEntity
      */
-    public function setGroupName(string $groupName): SecuredEntity {
+    public function setSecurityGroup(string $groupName): SecuredEntity {
         $this->groupName = $groupName;
         return $this;
     }

@@ -1,3 +1,3 @@
 app:
-    resource: '@AppBundle/etc/Routing.yml"'
+    resource: '@AppBundle/etc/Routing.yml'
     prefix: 'api/'

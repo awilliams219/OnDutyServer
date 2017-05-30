@@ -6,7 +6,7 @@ Apparatus_List:
 Apparatus_Read:
   path: /{id}
   methods: [GET, HEAD]
-  defaults: { _controller: AppBundle:Apparatus:show }
+  defaults: { _controller: AppBundle:Apparatus:read }
 
 Apparatus_Create:
   path: /
@@ -23,5 +23,24 @@ Apparatus_Delete:
   methods: [DELETE]
   defaults: { _controller: AppBundle:Apparatus:delete }
 
+Apparatus_Undelete:
+  path: /undelete/{id}
+  methods: [PUT]
+  defaults: { _controller: AppBundle:Apparatus:undelete }
+
+Apparatus_Status_Set:
+  path: /status/{id}
+  methods: [POST]
+  defaults: { _controller: AppBundle:Apparatus:updateStatus }
+
+Apparatus_Status_Get:
+  path: /status/{id}
+  methods: [GET]
+  defaults: { _controller: AppBundle:Apparatus:getStatus }
+
+Apparatus_Out_Of_Service_Set:
+  path: /oos/{id}
+  methods: [POST]
+  defaults: { _controller: AppBundle:Apparatus:oos }
 
 
