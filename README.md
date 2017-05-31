@@ -3,6 +3,8 @@ rcOnDuty
 
 Server software for the OnDuty mobile application
 
+Copy app/config/paramaters.yml.dist to app/config/parameters.yml and configure as needed.
+
 Run `composer update` from the app dir.
 
 Bring everything up with `docker-compose up &`
