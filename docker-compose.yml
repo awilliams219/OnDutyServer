@@ -18,6 +18,8 @@ services:
     working_dir: /usr/share/nginx/html
     volumes:
       - ./:/usr/share/nginx/html
+      - ./dockerrun/php/conf:/usr/local/etc/php/conf.d
+      - ./dockerrun/php/logs:/var/log/php
     links:
       - postgres
     environment:
