@@ -3,6 +3,8 @@ rcOnDuty
 
 Server software for the OnDuty mobile application
 
+Run `composer update` from the app dir.
+
 Bring everything up with `docker-compose up &`
 
 Execute bin/console commands on the local machine with `DATABASE_HOST=127.0.0.1 bin/console {command}`.  
