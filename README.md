@@ -3,15 +3,29 @@ rcOnDuty
 
 Server software for the OnDuty mobile application
 
+## Dependencies
+
+- docker
+- docker-compose
+- PHP 7.1 or later with pdo_pgsql extension
+
+## Installation
+
 Copy app/config/paramaters.yml.dist to app/config/parameters.yml and configure as needed.
 
-Run `composer update` from the app dir.
+Run `composer update` from the project directory.
 
-Bring everything up with `docker-compose up &`
+Bring everything up with `docker-compose up -d`
 
-Execute bin/console commands on the local machine with `DATABASE_HOST=127.0.0.1 bin/console {command}`.  
+On the host machine, run `alias symfony="DATABASE_HOST=127.0.0.1 bin/console"`.
 
-Alias it if you're feeling froggy:  `alias symfony="DATABASE_HOST=127.0.0.1 bin/console`.  Then just run `symfony {command}`
+Then run `symfony doctrine:schema:update --force` from the project directory. 
+
+## Symfony Console
+
+Execute bin/console commands on the host machine using `symfony {command}`.  If this stops working, rerun the alias command from the installation section.
+
+## Usage
  
 Access the app on localhost.  Nothing lives in root yet.  Use api paths and REST actions:
 
