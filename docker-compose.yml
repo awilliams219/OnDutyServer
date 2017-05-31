@@ -1,0 +1,41 @@
+version: '2'
+
+services:
+  postgres:
+    image: postgres:alpine
+    volumes:
+      - dbdata:/var/lib/postgresql/data/rconduty
+    environment:
+      POSTGRES_USER: rcondutyapp
+      POSTGRES_PASSWORD: rcondutypassword
+      PGDATA: /var/lib/postgresql/data/rconduty
+      POSTGRES_DB: rconduty
+
+  php:
+    build:
+      context: ./
+      dockerfile: ./dockerrun/php/php.dockerfile
+    working_dir: /usr/share/nginx/html
+    volumes:
+      - ./:/usr/share/nginx/html
+    links:
+      - postgres
+    environment:
+      DATABASE_HOST: postgres
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./dockerrun/nginx/conf:/etc/nginx/conf.d
+      - ./dockerrun/nginx/logs:/var/log/nginx
+      - ./:/usr/share/nginx/html
+    links:
+      - php
+    ports:
+      - "80:80"
+
+
+volumes:
+  dbdata:
+    driver: local
+

@@ -136,7 +136,7 @@ class Apparatus extends SecuredEntity implements ApparatusInterface, SoftDeletab
      *
      * @return int
      */
-    public function getId(): integer
+    public function getId(): int
     {
         return $this->id;
     }
