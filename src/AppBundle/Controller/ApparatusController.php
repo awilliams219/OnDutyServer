@@ -39,7 +39,8 @@ class ApparatusController extends ApiController {
             $apparatus->setSeats($request->get('seats'));
             $apparatus->setType($request->get('type'));
             $apparatus->setVin($request->get('vin'));
-            $apparatus->setStatus($this->getNewOffDutyStatus($apparatus));
+            $apparatus->addStatus($this->getNewOffDutyStatus($apparatus));
+            $apparatus->undelete();
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($apparatus);
@@ -164,6 +165,7 @@ class ApparatusController extends ApiController {
         $status
             ->setMedicalLevel('none')
             ->setOffDutyTime(new \DateTime())
+            ->setOnDutyTime(new \DateTime())
             ->setPersonnelCount(0)
             ->setPost('Station')
             ->setDutyStatus(ApparatusStatus::STATUS_OFFDUTY)
