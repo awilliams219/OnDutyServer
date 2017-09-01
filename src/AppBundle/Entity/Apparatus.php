@@ -57,6 +57,7 @@ class Apparatus extends SecuredEntity implements ApparatusInterface, SoftDeletab
     /** @var ApparatusStatus
      *
      * @ORM\OneToMany(targetEntity="ApparatusStatus", mappedBy="apparatus", cascade={"persist"})
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     private $status;
 
@@ -166,18 +167,14 @@ class Apparatus extends SecuredEntity implements ApparatusInterface, SoftDeletab
 
     public function toArray(): array {
         return [
+            "id" => $this->getId(),
             "name" => $this->getName(),
             "vin" => $this->getVin(),
             "seats" => $this->getSeats(),
             "type" => $this->getType(),
-            "status" => $this->getStatus()->condensed()
+            "status" => $this->getStatus()->toArray()
         ];
     }
 
-    public function toFullArray(): array {
-        $apparatus = $this->toArray();
-        $apparatus["status"] = $this->getStatus()->toArray();
-        return $apparatus;
-    }
 }
 

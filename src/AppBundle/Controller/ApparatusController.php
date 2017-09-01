@@ -26,7 +26,7 @@ class ApparatusController extends ApiController {
         $apparatusRepository = $this->getDoctrine()->getRepository('AppBundle:Apparatus');
         $apparatus = $apparatusRepository->find($id);
         if ($apparatus) {
-            return $this->jsonResponse(Response::HTTP_OK, "Apparatus Retrieved", $apparatus->toFullArray());
+            return $this->jsonResponse(Response::HTTP_OK, "Apparatus Retrieved", $apparatus->toArray());
         }
         return $this->jsonResponse(Response::HTTP_NOT_FOUND, "Not Found", []);
     }
@@ -58,6 +58,7 @@ class ApparatusController extends ApiController {
         $em = $this->getDoctrine()->getManager();
         /** @var Apparatus $apparatus */
         $apparatus = $apparatusRepository->find($id);
+        
 
         if ($apparatus) {
             $apparatus->setName($request->get('name'));
@@ -77,7 +78,7 @@ class ApparatusController extends ApiController {
         // todo: security
         $apparatusRepository = $this->getDoctrine()->getRepository('AppBundle:Apparatus');
         $entityManager = $this->getDoctrine()->getManager();
-
+       
         $apparatus = $apparatusRepository->find($id);
         if ($apparatus) {
             $status = new ApparatusStatus();
@@ -85,7 +86,7 @@ class ApparatusController extends ApiController {
                 ->setApparatus($apparatus)
                 ->setPersonnelCount($request->get('personnel'))
                 ->setOffDutyTime(new \DateTime($request->get('offduty')))
-                ->setOnDutyTime(new \DateTime('now'))
+                ->setOnDutyTime(new \DateTime($request->get('onduty')))
                 ->setMedicalLevel($request->get('level'))
                 ->setPost($request->get('post'))
                 ->setDutyStatus($request->get('status') == 'onduty' ? ApparatusStatus::STATUS_ONDUTY : ApparatusStatus::STATUS_OFFDUTY);

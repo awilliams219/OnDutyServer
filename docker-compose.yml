@@ -26,6 +26,10 @@ services:
       - postgres
     environment:
       DATABASE_HOST: postgres
+      PHP_XDEBUG_ENABLED: 1
+      XDEBUG_CONFIG: remote_host=192.168.254.254
+    expose:
+      - "9000"
 
   nginx:
     image: nginx:alpine

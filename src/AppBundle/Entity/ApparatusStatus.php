@@ -191,11 +191,12 @@ class ApparatusStatus extends SecuredEntity implements ApparatusStatusInterface 
         return [
             "personnelCount" => $this->getPersonnelCount(),
             "medicalLevel" => $this->getMedicalLevel(),
-            "onDutyTime" => $this->getOnDutyTime()->format('c'),
-            "offDutyTime" => $this->getOffDutyTime()->format('c'),
+            "onDutyTime" => $this->getOnDutyTime()->format(DATE_ATOM),
+            "offDutyTime" => $this->getOffDutyTime()->format(DATE_ATOM),
             "oosReason" => $this->getOosReason(),
             "dutyStatus" => $this->getReadableDutyStatus(),
-            "post" => $this->getPost()
+            "post" => $this->getPost(),
+            "readable" => $this->condensed()
         ];
     }
 
@@ -212,3 +213,4 @@ class ApparatusStatus extends SecuredEntity implements ApparatusStatusInterface 
         }
     }
 }
+
