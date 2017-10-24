@@ -183,7 +183,7 @@ class ApparatusStatus extends SecuredEntity implements ApparatusStatusInterface 
 
     public function condensed() {
         return ($this->getDutyStatus() != self::STATUS_ONDUTY)
-            ? $this->getReadableDutyStatus()
+            ? $this->getReadableDutyStatus(true)
             : $this->getReadableDutyStatus() . " C" . $this->getPersonnelCount() . '0 ' . $this->getMedicalLevel() . ' until ' . $this->getOffDutyTime()->format('Hi');
     }
 
@@ -191,8 +191,8 @@ class ApparatusStatus extends SecuredEntity implements ApparatusStatusInterface 
         return [
             "personnelCount" => $this->getPersonnelCount(),
             "medicalLevel" => $this->getMedicalLevel(),
-            "onDutyTime" => $this->getOnDutyTime()->format(DATE_ATOM),
-            "offDutyTime" => $this->getOffDutyTime()->format(DATE_ATOM),
+            "onDutyTime" => $this->getOnDutyTime()->format(DATE_ISO8601),
+            "offDutyTime" => $this->getOffDutyTime()->format(DATE_ISO8601),
             "oosReason" => $this->getOosReason(),
             "dutyStatus" => $this->getReadableDutyStatus(),
             "post" => $this->getPost(),
@@ -200,14 +200,18 @@ class ApparatusStatus extends SecuredEntity implements ApparatusStatusInterface 
         ];
     }
 
-    protected function getReadableDutyStatus() {
+    protected function getReadableDutyStatus(bool $withReason = false) {
+        $suffix = null;
         switch ($this->getDutyStatus()) {
             case self::STATUS_OFFDUTY:
                 return "Off Duty";
             case self::STATUS_ONDUTY:
                 return "On Duty";
             case self::STATUS_OOS:
-                return "Out of Service";
+                if ($withReason && $this->getOosReason() !== "") {
+                  $suffix = " - " . $this->oosReason;
+                }
+                return "Out of Service" . $suffix;
             default:
                 return "Unknown";
         }

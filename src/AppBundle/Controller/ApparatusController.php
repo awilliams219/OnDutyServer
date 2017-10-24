@@ -84,12 +84,13 @@ class ApparatusController extends ApiController {
             $status = new ApparatusStatus();
             $status
                 ->setApparatus($apparatus)
-                ->setPersonnelCount($request->get('personnel'))
-                ->setOffDutyTime(new \DateTime($request->get('offduty')))
-                ->setOnDutyTime(new \DateTime($request->get('onduty')))
-                ->setMedicalLevel($request->get('level'))
+                ->setPersonnelCount($request->get('personnelCount'))
+                ->setOffDutyTime(new \DateTime($request->get('offDutyTime')))
+                ->setOnDutyTime(new \DateTime($request->get('onDutyTime')))
+                ->setMedicalLevel($request->get('medicalLevel'))
                 ->setPost($request->get('post'))
-                ->setDutyStatus($request->get('status') == 'onduty' ? ApparatusStatus::STATUS_ONDUTY : ApparatusStatus::STATUS_OFFDUTY);
+                ->setDutyStatus($this->convertStatus($request->get('dutyStatus')))
+                ->setOosReason($request->get('oosReason'));
             $apparatus->addStatus($status);
             $entityManager->persist($apparatus);
             $entityManager->flush();
@@ -100,6 +101,15 @@ class ApparatusController extends ApiController {
 
     public function getStatusAction(Request $request, $id) {
 
+    }
+    
+    private function convertStatus($statusText) {
+      switch (strtoupper($statusText)) {
+        case "ON DUTY": return ApparatusStatus::STATUS_ONDUTY;
+        case "OFF DUTY": return ApparatusStatus::STATUS_OFFDUTY;
+        case "OUT OF SERVICE": return ApparatusStatus::STATUS_OOS;
+        default: return ApparatusStatus::STATUS_OFFDUTY;
+      }
     }
 
     public function deleteAction($id) {
